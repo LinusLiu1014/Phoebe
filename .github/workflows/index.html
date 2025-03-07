@@ -21,13 +21,12 @@
         }
         select {
             font-size: 24px;
-            width: 150px;
+            width: 250px;
         }
         #totalScore {
             font-size: 50px;
             margin-top: 20px;
         }
-        /* 放大按鈕 */
         button {
             font-size: 40px;
             padding: 20px 40px;
@@ -39,7 +38,6 @@
             cursor: pointer;
             margin-top: 20px;
         }
-        /* 按鈕懸停變色 */
         button:hover {
             background-color: #0056b3;
         }
@@ -59,23 +57,23 @@
         </thead>
         <tbody id="scoreTable">
             <!-- 心靈關懷 -->
-            <tr><td rowspan="5">心靈關懷</td><td>1. 是否有主動關心心理狀況</td><td><select class="scoreSelect"></select></td></tr>
-            <tr><td>2. 是否有照顧對方心情</td><td><select class="scoreSelect"></select></td></tr>
-            <tr><td>3. 尊重對方的想法與意願</td><td><select class="scoreSelect"></select></td></tr>
-            <tr><td>4. 愛護保護，發自內心的喜愛</td><td><select class="scoreSelect"></select></td></tr>
-            <tr><td>5. 給予正面的稱讚與感謝</td><td><select class="scoreSelect"></select></td></tr>
+            <tr><td rowspan="5">心靈關懷</td><td>1. 是否有主動關心老公心理狀況</td><td><select class="scoreSelect"></select></td></tr>
+            <tr><td>2. 是否有照顧老公心情</td><td><select class="scoreSelect"></select></td></tr>
+            <tr><td>3. 尊重老公想法與意願</td><td><select class="scoreSelect"></select></td></tr>
+            <tr><td>4. 愛護保護老公，發自內心的喜愛</td><td><select class="scoreSelect"></select></td></tr>
+            <tr><td>5. 給予老公正面的稱讚與感謝</td><td><select class="scoreSelect"></select></td></tr>
 
             <!-- 身體照顧 -->
-            <tr><td rowspan="3">身體照顧</td><td>6. 是否有關心身體狀況</td><td><select class="scoreSelect"></select></td></tr>
-            <tr><td>7. 受傷調養</td><td><select class="scoreSelect"></select></td></tr>
-            <tr><td>8. 身體健康保養做為</td><td><select class="scoreSelect"></select></td></tr>
+            <tr><td rowspan="3">身體照顧</td><td>6. 是否有關心老公身體狀況</td><td><select class="scoreSelect"></select></td></tr>
+            <tr><td>7. 老公身體受傷調養</td><td><select class="scoreSelect"></select></td></tr>
+            <tr><td>8. 老公身體健康的保養作為</td><td><select class="scoreSelect"></select></td></tr>
 
             <!-- 溝通品質 -->
-            <tr><td rowspan="11">溝通品質</td><td>9. 對方跟你說話時是否有專注聆聽</td><td><select class="scoreSelect"></select></td></tr>
-            <tr><td>10. 是否有記下對方的需求與重點</td><td><select class="scoreSelect"></select></td></tr>
-            <tr><td>11. 主動提出自己可以協助的內容</td><td><select class="scoreSelect"></select></td></tr>
+            <tr><td rowspan="11">溝通品質</td><td>9. 老公說話時是否有專注聆聽</td><td><select class="scoreSelect"></select></td></tr>
+            <tr><td>10. 是否有記下老公的需求與重點</td><td><select class="scoreSelect"></select></td></tr>
+            <tr><td>11. 主動提出自己想協助的工作內容</td><td><select class="scoreSelect"></select></td></tr>
             <tr><td>12. 若有困難主動提出討論</td><td><select class="scoreSelect"></select></td></tr>
-            <tr><td>13. 主動安排時間討論</td><td><select class="scoreSelect"></select></td></tr>
+            <tr><td>13. 主動安排時間討論與溝通</td><td><select class="scoreSelect"></select></td></tr>
             <tr><td>14. 不敷衍了事</td><td><select class="scoreSelect"></select></td></tr>
             <tr><td>15. 思考方式從個人轉換成家庭(我們)</td><td><select class="scoreSelect"></select></td></tr>
             <tr><td>16. 針對做法與決策應全部提出討論</td><td><select class="scoreSelect"></select></td></tr>
@@ -102,12 +100,12 @@
 
     <script>
         function populateSelects() {
-            let options = ["0", "3", "5"];
+            let options = ["請選擇", "5 - 有具體成果", "1 - 有做沒做好", "0 - 無具體事證", "-5 - 未做到"];
             let selects = document.querySelectorAll('.scoreSelect');
             selects.forEach(select => {
                 options.forEach(option => {
                     let opt = document.createElement("option");
-                    opt.value = option;
+                    opt.value = option === "請選擇" ? "" : option.split(" - ")[0];
                     opt.textContent = option;
                     select.appendChild(opt);
                 });
@@ -118,7 +116,9 @@
             let total = 0;
             let selects = document.querySelectorAll('.scoreSelect');
             selects.forEach(select => {
-                total += parseInt(select.value);
+                if (select.value) {
+                    total += parseInt(select.value);
+                }
             });
 
             let result = document.getElementById('totalScore');
@@ -128,10 +128,13 @@
             if (total < 50) {
                 result.style.color = "red";
                 result.textContent += " 不及格(去睡路邊)";
-            } else if (total >= 100) {
-                result.style.color = "aqua";
+            } else if (total >= 110) {
+                result.style.color = "orange";
                 result.textContent += " 延長3週";
-            } else if (total >= 80) {
+            } else if (total >= 100) {
+                result.style.color = "limegreen";
+                result.textContent += " 延長2週";
+            } else if (total >= 85) {
                 result.style.color = "green";
                 result.textContent += " 延長1週";
             } else if (total >= 70) {
