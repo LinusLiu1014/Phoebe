@@ -100,7 +100,7 @@
 
     <script>
         function populateSelects() {
-            let options = ["請選擇", "5 - 有具體成果", "3 - 有做沒成果", "0 - 無具體事證", "-5 - 未做到"];
+            let options = ["請選擇", "5 - 有具體成果", "3 - 有做沒卓越成果", "0 - 無具體事證", "-5 - 未做到"];
             let selects = document.querySelectorAll('.scoreSelect');
             selects.forEach(select => {
                 options.forEach(option => {
@@ -124,11 +124,11 @@
                 
                 // 加權計分
                 if (category.includes("心靈關懷")) {
-                    score *= 1.5;
+                    score *= 2;
                 } else if (category.includes("身體照顧")) {
-                    score *= 1.5;
+                    score *= 2;
                 } else if (category.includes("溝通品質")) {
-                    score *= 1.2;
+                    score *= 2;
                 }
 
                 total += score;
