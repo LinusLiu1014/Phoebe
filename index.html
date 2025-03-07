@@ -112,42 +112,58 @@
             });
         }
 
-        function calculateTotal() {
-            let total = 0;
-            let selects = document.querySelectorAll('.scoreSelect');
-            selects.forEach(select => {
-                if (select.value) {
-                    total += parseInt(select.value);
+    function calculateTotal() {
+        let total = 0;
+
+        document.querySelectorAll("tbody tr").forEach(row => {
+            let category = row.cells[0].textContent.trim(); // 取得類別
+            let select = row.querySelector(".scoreSelect");
+
+            if (select && select.value) {
+                let score = parseInt(select.value);
+                
+                // 加權計分
+                if (category.includes("心靈關懷")) {
+                    score *= 1.5;
+                } else if (category.includes("身體照顧")) {
+                    score *= 1.5;
+                } else if (category.includes("溝通品質")) {
+                    score *= 1.2;
                 }
-            });
 
-            let result = document.getElementById('totalScore');
-            result.textContent = "總分：" + total;
-            result.style.fontSize = "50px";
-
-            if (total < 78) {
-                result.style.color = "red";
-                result.textContent += " 不及格(去睡路邊)";
-            } else if (total >= 123) {
-                result.style.color = "orange";
-                result.textContent += " 真的假的?延長2週";
-            } else if (total >= 117) {
-                result.style.color = "limegreen";
-                result.textContent += " 還不錯哦!延長1週";
-            } else if (total >= 104) {
-                result.style.color = "green";
-                result.textContent += "請加把勁 延長3天";
-            } else if (total >= 91) {
-                result.style.color = "brown";
-                result.textContent += " 加油好嗎! 延長2天";
-            } else if (total >= 78) {
-                result.style.color = "blue";
-                result.textContent += " 完全不行啊! 延長1天";
+                total += score;
             }
-        }
+        });
 
-        window.onload = populateSelects;
-    </script>
+        let result = document.getElementById('totalScore');
+        result.textContent = "總分：" + total.toFixed(1);
+        result.style.fontSize = "50px";
+
+        if (total < 78) {
+            result.style.color = "red";
+            result.textContent += " 不及格(去睡路邊)";
+        } else if (total >= 123) {
+            result.style.color = "orange";
+            result.textContent += " 真的假的?延長2週";
+        } else if (total >= 117) {
+            result.style.color = "limegreen";
+            result.textContent += " 還不錯哦!延長1週";
+        } else if (total >= 104) {
+            result.style.color = "green";
+            result.textContent += "請加把勁 延長3天";
+        } else if (total >= 91) {
+            result.style.color = "brown";
+            result.textContent += " 加油好嗎! 延長2天";
+        } else if (total >= 78) {
+            result.style.color = "blue";
+            result.textContent += " 完全不行啊! 延長1天";
+        }
+    }
+
+   window.onload = populateSelects;
+</script>
+
+
 
 </body>
 </html>
