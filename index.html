@@ -125,22 +125,22 @@
             result.textContent = "總分：" + total;
             result.style.fontSize = "50px";
 
-            if (total < 50) {
+            if (total < 78) {
                 result.style.color = "red";
                 result.textContent += " 不及格(去睡路邊)";
-            } else if (total >= 110) {
+            } else if (total >= 123) {
                 result.style.color = "orange";
-                result.textContent += " 延長3週";
-            } else if (total >= 100) {
-                result.style.color = "limegreen";
                 result.textContent += " 延長2週";
-            } else if (total >= 85) {
-                result.style.color = "green";
+            } else if (total >= 117) {
+                result.style.color = "limegreen";
                 result.textContent += " 延長1週";
-            } else if (total >= 70) {
-                result.style.color = "yellow";
+            } else if (total >= 104) {
+                result.style.color = "green";
                 result.textContent += " 延長3天";
-            } else if (total >= 60) {
+            } else if (total >= 91) {
+                result.style.color = "brown";
+                result.textContent += " 延長2天";
+            } else if (total >= 78) {
                 result.style.color = "blue";
                 result.textContent += " 延長1天";
             }
