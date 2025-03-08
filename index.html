@@ -129,10 +129,13 @@ function calculateTotal() {
 
     return total;
 }
+<td><select class="scoreSelect"></select></td>
 
 function populateSelects() {
-    let options = ["0", "5", "3", "0", "-5"].map(val => `<option value="${val}">${val}</option>`).join("");
-    document.querySelectorAll('.scoreSelect').forEach(select => { select.innerHTML = options; });
+    let options = ["0", "5", "3", "-5"].map(val => `<option value="${val}">${val}</option>`).join("");
+    document.querySelectorAll('.scoreSelect').forEach(select => { 
+        select.innerHTML = options; 
+    });
 }
 
 async function saveScore() {
