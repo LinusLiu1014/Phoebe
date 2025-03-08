@@ -111,84 +111,80 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        function calculateTotal() {
-            let total = 0;
-            document.querySelectorAll('.scoreSelect').forEach(select => {
-                let value = parseInt(select.value, 10);
-                if (!isNaN(value)) total += value;
-            });
+function calculateTotal() {
+    let total = 0;
+    document.querySelectorAll('.scoreSelect').forEach(select => {
+        let value = parseInt(select.value, 10) || 0;
+        total += value;
+    });
 
-            let result = document.getElementById('totalScore');
-            result.textContent = `總分：${total}`;
-            result.style.fontSize = "50px";
-            result.style.color = total > 110 ? "orange" : 
-                                  total > 100 ? "limegreen" : 
-                                  total > 85 ? "green" : 
-                                  total > 70 ? "yellow" : 
-                                  total > 60 ? "blue" : "red";
+    let result = document.getElementById('totalScore');
+    result.textContent = `總分：${total}`;
+    result.style.fontSize = "50px";
+    result.style.color = total > 110 ? "orange" : 
+                          total > 100 ? "limegreen" : 
+                          total > 85 ? "green" : 
+                          total > 70 ? "yellow" : 
+                          total > 60 ? "blue" : "red";
 
-            return total;
-        }
+    return total;
+}
 
-        async function saveScore() {
-            let score = calculateTotal();
-            try {
-                await addDoc(collection(db, "scores"), { 
-                    score, 
-                    timestamp: serverTimestamp() 
-                });
-                alert("儲存成功!");
-                loadScores();
-            } catch (e) {
-                alert("儲存失敗!");
-                console.error("錯誤: ", e);
-            }
-        }
+function populateSelects() {
+    let options = ["0", "5", "3", "0", "-5"].map(val => `<option value="${val}">${val}</option>`).join("");
+    document.querySelectorAll('.scoreSelect').forEach(select => { select.innerHTML = options; });
+}
 
-import { getDocs, collection, orderBy, query } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+async function saveScore() {
+    let score = calculateTotal();
+    try {
+        await addDoc(collection(db, "scores"), { 
+            score, 
+            timestamp: serverTimestamp() 
+        });
+        alert("儲存成功!");
+        loadScores();
+    } catch (e) {
+        alert("儲存失敗!");
+        console.error("錯誤: ", e);
+    }
+}
 
 async function loadScores() {
     const recordList = document.getElementById("scoreHistoryTable").getElementsByTagName("tbody")[0];
     recordList.innerHTML = "";
 
-    // 加入 orderBy 讓紀錄按照時間降序排列
     const q = query(collection(db, "scores"), orderBy("timestamp", "desc"));
     const querySnapshot = await getDocs(q);
 
     querySnapshot.forEach((doc) => {
         const data = doc.data();
+        const formattedTime = data.timestamp ? data.timestamp.toDate().toLocaleString() : "無時間紀錄";
         const row = recordList.insertRow();
         row.innerHTML = `
-            <td>${data.timestamp?.toDate().toLocaleString()}</td>
+            <td>${formattedTime}</td>
             <td>${data.score}</td>
             <td><button onclick="deleteRecord('${doc.id}')">刪除</button></td>
         `;
     });
 }
 
-// 讓 deleteRecord() 可以被 <button> 呼叫
 window.deleteRecord = async function(docId) {
     try {
         await deleteDoc(doc(db, "scores", docId));
         alert("刪除成功!");
-        loadScores();  // 重新載入列表
+        loadScores();
     } catch (error) {
         console.error("刪除失敗: ", error);
         alert("刪除失敗!");
     }
 };
 
-        function populateSelects() {
-            let options = ["", "5", "3", "0", "-5"].map(val => `<option value="${val}">${val}</option>`).join("");
-            document.querySelectorAll('.scoreSelect').forEach(select => { select.innerHTML = options; });
-        }
-
-        document.addEventListener("DOMContentLoaded", () => {
-            populateSelects();
-            loadScores();
-            document.getElementById("saveButton").addEventListener("click", saveScore);
-        });
-
+document.addEventListener("DOMContentLoaded", () => {
+    populateSelects();
+    loadScores();
+    document.getElementById("saveButton").addEventListener("click", saveScore);
+});
     </script>
 </body>
 </html>
