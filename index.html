@@ -145,10 +145,16 @@
             }
         }
 
+import { getDocs, collection, orderBy, query } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
 async function loadScores() {
     const recordList = document.getElementById("scoreHistoryTable").getElementsByTagName("tbody")[0];
     recordList.innerHTML = "";
-    const querySnapshot = await getDocs(collection(db, "scores"));
+
+    // 加入 orderBy 讓紀錄按照時間降序排列
+    const q = query(collection(db, "scores"), orderBy("timestamp", "desc"));
+    const querySnapshot = await getDocs(q);
+
     querySnapshot.forEach((doc) => {
         const data = doc.data();
         const row = recordList.insertRow();
