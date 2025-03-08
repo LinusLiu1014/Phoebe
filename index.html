@@ -55,7 +55,7 @@
                 <th>分數</th>
             </tr>
         </thead>
-                <tbody id="scoreTable">
+        <tbody id="scoreTable">
             <!-- 心靈關懷 -->
             <tr><td rowspan="5">心靈關懷</td><td>1. 是否有主動關心老公心理狀況</td><td><select class="scoreSelect"></select></td></tr>
             <tr><td>2. 是否有照顧老公心情</td><td><select class="scoreSelect"></select></td></tr>
@@ -127,51 +127,22 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-    function calculateTotal() {
-        let total = 0;
+        function calculateTotal() {
+            let total = 0;
+            document.querySelectorAll('.scoreSelect').forEach(select => {
+                let value = parseInt(select.value, 10) || 0;
+                total += value;
+            });
 
-        document.querySelectorAll("tbody tr").forEach(row => {
-            let category = row.cells[0].textContent.trim(); // 取得類別
-            let select = row.querySelector(".scoreSelect");
+            let result = document.getElementById('totalScore');
+            result.textContent = `總分：${total}`;
+            result.style.fontSize = "50px";
+            result.style.color = total > 110 ? "orange" : 
+                                total > 100 ? "limegreen" : 
+                                total > 85 ? "green" : 
+                                total > 70 ? "yellow" : 
+                                total > 60 ? "blue" : "red";
 
-            if (select && select.value) {
-                let score = parseInt(select.value);
-                
-                // 加權計分
-                if (category.includes("心靈關懷")) {
-                    score *= 2;
-                } else if (category.includes("身體照顧")) {
-                    score *= 2;
-                } else if (category.includes("溝通品質")) {
-                    score *= 2;
-                }
-
-                total += score;
-            }
-        });
-
-        let result = document.getElementById('totalScore');
-        result.textContent = "總分：" + total.toFixed(1);
-        result.style.fontSize = "50px";
-
-        if (total < 78) {
-            result.style.color = "red";
-            result.textContent += " 不及格(去睡路邊)";
-        } else if (total >= 123) {
-            result.style.color = "orange";
-            result.textContent += " 真的假的?延長2週";
-        } else if (total >= 117) {
-            result.style.color = "limegreen";
-            result.textContent += " 還不錯哦!延長1週";
-        } else if (total >= 104) {
-            result.style.color = "green";
-            result.textContent += "請加把勁 延長3天";
-        } else if (total >= 91) {
-            result.style.color = "brown";
-            result.textContent += " 加油好嗎! 延長2天";
-        } else if (total >= 78) {
-            result.style.color = "blue";
-            result.textContent += " 完全不行啊! 延長1天";
             return total;
         }
 
