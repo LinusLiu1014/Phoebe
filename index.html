@@ -145,30 +145,32 @@
             }
         }
 
-        async function loadScores() {
-            const recordList = document.getElementById("scoreHistoryTable").getElementsByTagName("tbody")[0];
-            recordList.innerHTML = "";
-            const querySnapshot = await getDocs(collection(db, "scores"));
-            querySnapshot.forEach((doc) => {
-                const data = doc.data();
-                const row = recordList.insertRow();
-                row.innerHTML = `
-                    <td>${data.timestamp?.toDate().toLocaleString()}</td>
-                    <td>${data.score}</td>
-                    <td><button onclick="deleteRecord('${doc.id}')">刪除</button></td>
-                `;
-            });
-        }
+async function loadScores() {
+    const recordList = document.getElementById("scoreHistoryTable").getElementsByTagName("tbody")[0];
+    recordList.innerHTML = "";
+    const querySnapshot = await getDocs(collection(db, "scores"));
+    querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        const row = recordList.insertRow();
+        row.innerHTML = `
+            <td>${data.timestamp?.toDate().toLocaleString()}</td>
+            <td>${data.score}</td>
+            <td><button onclick="deleteRecord('${doc.id}')">刪除</button></td>
+        `;
+    });
+}
 
-        async function deleteRecord(docId) {
-            try {
-                await deleteDoc(doc(db, "scores", docId));
-                alert("刪除成功!");
-                loadScores();
-            } catch (error) {
-                console.error("刪除失敗: ", error);
-            }
-        }
+// 讓 deleteRecord() 可以被 <button> 呼叫
+window.deleteRecord = async function(docId) {
+    try {
+        await deleteDoc(doc(db, "scores", docId));
+        alert("刪除成功!");
+        loadScores();  // 重新載入列表
+    } catch (error) {
+        console.error("刪除失敗: ", error);
+        alert("刪除失敗!");
+    }
+};
 
         function populateSelects() {
             let options = ["", "5", "3", "0", "-5"].map(val => `<option value="${val}">${val}</option>`).join("");
