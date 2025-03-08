@@ -75,95 +75,112 @@
             <tr><td>12. 若有困難主動提出討論</td><td><select class="scoreSelect"></select></td></tr>
             <tr><td>13. 主動安排時間討論與溝通</td><td><select class="scoreSelect"></select></td></tr>
             <tr><td>14. 不敷衍了事</td><td><select class="scoreSelect"></select></td></tr>
-            <tr><td>15. 思考方式從個人轉換成家庭(我們)</td><td><select class="scoreSelect"></select></td></tr>
-            <tr><td>16. 針對做法與決策應全部提出討論</td><td><select class="scoreSelect"></select></td></tr>
-            <tr><td>17. 面對問題時，先回答問題再說細節</td><td><select class="scoreSelect"></select></td></tr>
-            <tr><td>18. 承諾或達成共識要全然接受並遵守不能打折</td><td><select class="scoreSelect"></select></td></tr>
-            <tr><td>19. 先聽對方說話(用心)不要打斷插話</td><td><select class="scoreSelect"></select></td></tr>
-
-            <!-- 家庭維持 -->
-            <tr><td rowspan="3">家庭維持</td><td>20. 開支控管</td><td><select class="scoreSelect"></select></td></tr>
-            <tr><td>21. 環境整理(除清潔外的整理與空間規劃)</td><td><select class="scoreSelect"></select></td></tr>
-            <tr><td>22. 與家庭成員照顧(包括父母)</td><td><select class="scoreSelect"></select></td></tr>
-
-            <!-- 未來規劃 -->
-            <tr><td rowspan="4">未來規劃</td><td>23. 小孩人品與教育學習</td><td><select class="scoreSelect"></select></td></tr>
-            <tr><td>24. 家庭收支規劃</td><td><select class="scoreSelect"></select></td></tr>
-            <tr><td>25. 家庭設備維護增減</td><td><select class="scoreSelect"></select></td></tr>
-            <tr><td>26. 空間規劃精進</td><td><select class="scoreSelect"></select></td></tr>
         </tbody>
     </table>
 
     <button onclick="calculateTotal()">計算總分</button>
-
     <div id="totalScore"></div>
+    <button id="saveButton">儲存分數</button>
 
-    <script>
-        function populateSelects() {
-            let options = ["請選擇", "5 - 有具體(卓越)成果", "3 - 有做沒卓越成果", "0 - 無具體成果", "-5 - 未做到"];
-            let selects = document.querySelectorAll('.scoreSelect');
-            selects.forEach(select => {
-                options.forEach(option => {
-                    let opt = document.createElement("option");
-                    opt.value = option === "請選擇" ? "" : option.split(" - ")[0];
-                    opt.textContent = option;
-                    select.appendChild(opt);
+    <h2>評分紀錄</h2>
+    <table id="scoreHistoryTable">
+        <thead>
+            <tr>
+                <th>時間</th>
+                <th>分數</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBs539VzsBModxxNBaML0g7Sxm94vAjiZc",
+            authDomain: "phoebe-62b84.firebaseapp.com",
+            projectId:"phoebe-62b84",
+            storageBucket: "phoebe-62b84.firebasestorage.app",
+            messagingSenderId: "198453372181",
+            appId: "1:198453372181:web:f27d955f1926105eedf51c",
+            measurementId: "G-FPR4Z5N3ZW"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        function calculateTotal() {
+            let total = 0;
+            document.querySelectorAll('.scoreSelect').forEach(select => {
+                let value = parseInt(select.value, 10);
+                if (!isNaN(value)) total += value;
+            });
+
+            let result = document.getElementById('totalScore');
+            result.textContent = `總分：${total}`;
+            result.style.fontSize = "50px";
+            result.style.color = total > 110 ? "orange" : 
+                                  total > 100 ? "limegreen" : 
+                                  total > 85 ? "green" : 
+                                  total > 70 ? "yellow" : 
+                                  total > 60 ? "blue" : "red";
+
+            return total;
+        }
+
+        async function saveScore() {
+            let score = calculateTotal();
+            try {
+                await addDoc(collection(db, "scores"), { 
+                    score, 
+                    timestamp: serverTimestamp() 
                 });
+                alert("儲存成功!");
+                loadScores();
+            } catch (e) {
+                alert("儲存失敗!");
+                console.error("錯誤: ", e);
+            }
+        }
+
+        async function loadScores() {
+            const recordList = document.getElementById("scoreHistoryTable").getElementsByTagName("tbody")[0];
+            recordList.innerHTML = "";
+            const querySnapshot = await getDocs(collection(db, "scores"));
+            querySnapshot.forEach((doc) => {
+                const data = doc.data();
+                const row = recordList.insertRow();
+                row.innerHTML = `
+                    <td>${data.timestamp?.toDate().toLocaleString()}</td>
+                    <td>${data.score}</td>
+                    <td><button onclick="deleteRecord('${doc.id}')">刪除</button></td>
+                `;
             });
         }
 
-    function calculateTotal() {
-        let total = 0;
-
-        document.querySelectorAll("tbody tr").forEach(row => {
-            let category = row.cells[0].textContent.trim(); // 取得類別
-            let select = row.querySelector(".scoreSelect");
-
-            if (select && select.value) {
-                let score = parseInt(select.value);
-                
-                // 加權計分
-                if (category.includes("心靈關懷")) {
-                    score *= 2;
-                } else if (category.includes("身體照顧")) {
-                    score *= 2;
-                } else if (category.includes("溝通品質")) {
-                    score *= 2;
-                }
-
-                total += score;
+        async function deleteRecord(docId) {
+            try {
+                await deleteDoc(doc(db, "scores", docId));
+                alert("刪除成功!");
+                loadScores();
+            } catch (error) {
+                console.error("刪除失敗: ", error);
             }
+        }
+
+        function populateSelects() {
+            let options = ["", "5", "3", "0", "-5"].map(val => `<option value="${val}">${val}</option>`).join("");
+            document.querySelectorAll('.scoreSelect').forEach(select => { select.innerHTML = options; });
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            populateSelects();
+            loadScores();
+            document.getElementById("saveButton").addEventListener("click", saveScore);
         });
 
-        let result = document.getElementById('totalScore');
-        result.textContent = "總分：" + total.toFixed(1);
-        result.style.fontSize = "50px";
-
-        if (total < 78) {
-            result.style.color = "red";
-            result.textContent += " 不及格(去睡路邊)";
-        } else if (total >= 123) {
-            result.style.color = "orange";
-            result.textContent += " 真的假的?延長2週";
-        } else if (total >= 117) {
-            result.style.color = "limegreen";
-            result.textContent += " 還不錯哦!延長1週";
-        } else if (total >= 104) {
-            result.style.color = "green";
-            result.textContent += "請加把勁 延長3天";
-        } else if (total >= 91) {
-            result.style.color = "brown";
-            result.textContent += " 加油好嗎! 延長2天";
-        } else if (total >= 78) {
-            result.style.color = "blue";
-            result.textContent += " 完全不行啊! 延長1天";
-        }
-    }
-
-   window.onload = populateSelects;
-</script>
-
-
-
+    </script>
 </body>
 </html>
