@@ -153,12 +153,24 @@
             let result = document.getElementById('totalScore');
             result.textContent = `總分：${total}`;
             result.style.fontSize = "50px";
-            result.style.color = total > 110 ? "orange" : 
-                                total > 100 ? "limegreen" : 
-                                total > 85 ? "green" : 
-                                total > 70 ? "yellow" : 
-                                total > 60 ? "blue" : "red";
-
+          if (total < 78) {
+            result.style.color = "red";
+            result.textContent += " 不及格(去睡路邊)";
+        } else if (total >= 123) {
+            result.style.color = "orange";
+            result.textContent += " 真的假的?延長2週";
+        } else if (total >= 117) {
+            result.style.color = "limegreen";
+            result.textContent += " 還不錯哦!延長1週";
+        } else if (total >= 104) {
+            result.style.color = "green";
+            result.textContent += "請加把勁 延長3天";
+        } else if (total >= 91) {
+            result.style.color = "brown";
+            result.textContent += " 加油好嗎! 延長2天";
+        } else if (total >= 78) {
+            result.style.color = "blue";
+            result.textContent += " 完全不行啊! 延長1天";
             return total;
         }
 
