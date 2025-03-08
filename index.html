@@ -127,12 +127,28 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        function calculateTotal() {
-            let total = 0;
-            document.querySelectorAll('.scoreSelect').forEach(select => {
-                let value = parseInt(select.value, 10) || 0;
-                total += value;
-            });
+  function calculateTotal() {
+        let total = 0;
+
+        document.querySelectorAll("tbody tr").forEach(row => {
+            let category = row.cells[0].textContent.trim(); // 取得類別
+            let select = row.querySelector(".scoreSelect");
+
+            if (select && select.value) {
+                let score = parseInt(select.value);
+                
+                // 加權計分
+                if (category.includes("心靈關懷")) {
+                    score *= 2;
+                } else if (category.includes("身體照顧")) {
+                    score *= 2;
+                } else if (category.includes("溝通品質")) {
+                    score *= 2;
+                }
+
+                total += score;
+            }
+        });
 
             let result = document.getElementById('totalScore');
             result.textContent = `總分：${total}`;
