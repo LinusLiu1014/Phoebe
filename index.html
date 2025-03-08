@@ -5,42 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>評分表</title>
     <style>
-        body {
-            font-size: 24px;
-            text-align: center;
-        }
-        table {
-            width: 80%;
-            margin: 20px auto;
-            border-collapse: collapse;
-        }
-        th, td {
-            border: 1px solid black;
-            padding: 10px;
-            text-align: left;
-        }
-        select {
-            font-size: 24px;
-            width: 150px;
-        }
-        #totalScore {
-            font-size: 50px;
-            margin-top: 20px;
-        }
-        button {
-            font-size: 30px;
-            padding: 10px 20px;
-            width: 250px;
-            border-radius: 10px;
-            background-color: #007BFF;
-            color: white;
-            border: none;
-            cursor: pointer;
-            margin-top: 20px;
-        }
-        button:hover {
-            background-color: #0056b3;
-        }
+        body { font-size: 24px; text-align: center; }
+        table { width: 80%; margin: 20px auto; border-collapse: collapse; }
+        th, td { border: 1px solid black; padding: 10px; text-align: left; }
+        select { font-size: 17px; width: 180px; }
+        #totalScore { font-size: 50px; margin-top: 20px; }
+        button { font-size: 30px; padding: 10px 20px; width: 250px; border-radius: 10px; background-color: #007BFF; color: white; border: none; cursor: pointer; margin-top: 20px; }
+        button:hover { background-color: #0056b3; }
+
+
     </style>
 </head>
 <body>
@@ -56,21 +29,21 @@
             </tr>
         </thead>
         <tbody id="scoreTable">
-            <!-- 心靈關懷 -->
-            <tr><td rowspan="5">心靈關懷</td><td>1. 是否有主動關心老公心理狀況</td><td><select class="scoreSelect"></select></td></tr>
-            <tr><td>2. 是否有照顧老公心情</td><td><select class="scoreSelect"></select></td></tr>
-            <tr><td>3. 尊重老公想法與意願</td><td><select class="scoreSelect"></select></td></tr>
-            <tr><td>4. 愛護保護老公，發自內心的喜愛</td><td><select class="scoreSelect"></select></td></tr>
-            <tr><td>5. 給予老公正面的稱讚與感謝</td><td><select class="scoreSelect"></select></td></tr>
+            <!-- 心靈關懷 (分數*2) -->
+            <tr><td rowspan="5">心靈關懷</td><td>1.是否有主動關心老公心理狀況</td><td><select class="scoreSelect weighted-2"></select></td></tr>
+            <tr><td>2.是否有照顧老公心情</td><td><select class="scoreSelect weighted-2"></select></td></tr>
+            <tr><td>3.尊重老公想法與意願</td><td><select class="scoreSelect weighted-2"></select></td></tr>
+            <tr><td>4.愛護保護老公，發自內心的喜愛</td><td><select class="scoreSelect weighted-2"></select></td></tr>
+            <tr><td>5.給予老公正面的稱讚與感謝</td><td><select class="scoreSelect weighted-2"></select></td></tr>
 
-            <!-- 身體照顧 -->
-            <tr><td rowspan="3">身體照顧</td><td>6. 是否有關心老公身體狀況</td><td><select class="scoreSelect"></select></td></tr>
-            <tr><td>7. 老公身體受傷調養</td><td><select class="scoreSelect"></select></td></tr>
-            <tr><td>8. 老公身體健康的保養作為</td><td><select class="scoreSelect"></select></td></tr>
+            <!-- 身體照顧 (分數*2) -->
+            <tr><td rowspan="3">身體照顧</td><td>6.是否有關心老公身體狀況</td><td><select class="scoreSelect weighted-2"></select></td></tr>
+            <tr><td>7.老公身體受傷調養</td><td><select class="scoreSelect weighted-2"></select></td></tr>
+            <tr><td>8.老公身體健康的保養作為</td><td><select class="scoreSelect weighted-2"></select></td></tr>
 
-            <!-- 溝通品質 -->
-            <tr><td rowspan="11">溝通品質</td><td>9. 老公說話時是否有專注聆聽</td><td><select class="scoreSelect"></select></td></tr>
-            <tr><td>10. 是否有記下老公的需求與重點</td><td><select class="scoreSelect"></select></td></tr>
+            <!-- 溝通品質 (分數*1.5) -->
+            <tr><td rowspan="11">溝通品質</td><td>9. 老公說話時是否有專注聆聽</td><td><select class="scoreSelect weighted-1-5"></select></td></tr>
+            <tr><td>10. 是否有記下老公的需求與重點</td><td><select class="scoreSelect weighted-1-5"></select></td></tr>
             <tr><td>11. 主動提出自己想協助的工作內容</td><td><select class="scoreSelect"></select></td></tr>
             <tr><td>12. 若有困難主動提出討論</td><td><select class="scoreSelect"></select></td></tr>
             <tr><td>13. 主動安排時間討論與溝通</td><td><select class="scoreSelect"></select></td></tr>
@@ -80,7 +53,6 @@
             <tr><td>17. 面對問題時，先回答問題再說細節</td><td><select class="scoreSelect"></select></td></tr>
             <tr><td>18. 承諾或達成共識要全然接受並遵守不能打折</td><td><select class="scoreSelect"></select></td></tr>
             <tr><td>19. 先聽對方說話(用心)不要打斷插話</td><td><select class="scoreSelect"></select></td></tr>
-
             <!-- 家庭維持 -->
             <tr><td rowspan="3">家庭維持</td><td>20. 開支控管</td><td><select class="scoreSelect"></select></td></tr>
             <tr><td>21. 環境整理(除清潔外的整理與空間規劃)</td><td><select class="scoreSelect"></select></td></tr>
@@ -91,6 +63,7 @@
             <tr><td>24. 家庭收支規劃</td><td><select class="scoreSelect"></select></td></tr>
             <tr><td>25. 家庭設備維護增減</td><td><select class="scoreSelect"></select></td></tr>
             <tr><td>26. 空間規劃精進</td><td><select class="scoreSelect"></select></td></tr>
+
         </tbody>
     </table>
 
@@ -104,6 +77,7 @@
             <tr>
                 <th>時間</th>
                 <th>分數</th>
+                <th>結果</th>
                 <th>操作</th>
             </tr>
         </thead>
@@ -127,67 +101,70 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-  function calculateTotal() {
-        let total = 0;
+        function populateSelects() {
+let options = `
+    <option value="5">5 (有具體成果)</option>
+    <option value="1">1 (有做沒做好)</option>
+    <option value="0">0 (無具體事證)</option>
+    <option value="-5">-5 (沒做到)</option>
+`;
+document.querySelectorAll('.scoreSelect').forEach(select => { 
+    select.innerHTML = options;
+    select.value = "0";
+});
 
-        document.querySelectorAll("tbody tr").forEach(row => {
-            let category = row.cells[0].textContent.trim(); // 取得類別
-            let select = row.querySelector(".scoreSelect");
-
-            if (select && select.value) {
-                let score = parseInt(select.value);
-                
-                // 加權計分
-                if (category.includes("心靈關懷")) {
-                    score *= 2;
-                } else if (category.includes("身體照顧")) {
-                    score *= 2;
-                } else if (category.includes("溝通品質")) {
-                    score *= 2;
-                }
-
-                total += score;
-            }
-        });
-
-            let result = document.getElementById('totalScore');
-            result.textContent = `總分：${total}`;
-            result.style.fontSize = "50px";
-          if (total < 78) {
-            result.style.color = "red";
-            result.textContent += " 不及格(去睡路邊)";
-        } else if (total >= 123) {
-            result.style.color = "orange";
-            result.textContent += " 真的假的?延長2週";
-        } else if (total >= 117) {
-            result.style.color = "limegreen";
-            result.textContent += " 還不錯哦!延長1週";
-        } else if (total >= 104) {
-            result.style.color = "green";
-            result.textContent += "請加把勁 延長3天";
-        } else if (total >= 91) {
-            result.style.color = "brown";
-            result.textContent += " 加油好嗎! 延長2天";
-        } else if (total >= 78) {
-            result.style.color = "blue";
-            result.textContent += " 完全不行啊! 延長1天";
-            return total;
         }
 
-        function populateSelects() {
-            let options = ["5", "3", "0", "-5"].map(val => `<option value="${val}">${val}</option>`).join("");
-            document.querySelectorAll('.scoreSelect').forEach(select => { 
-                select.innerHTML = options;
-                select.value = "0";  // 預設為 0 分
-            });
+function calculateTotal() {
+    let total = 0;
+    document.querySelectorAll(".scoreSelect").forEach(select => {
+        let baseScore = parseInt(select.value) || 0;
+        let weight = 1; // 預設權重為 1
+
+        if (select.classList.contains("weighted-2")) weight = 2;
+        if (select.classList.contains("weighted-1-5")) weight = 1.5;
+
+        total += baseScore * weight;
+    });
+
+            let resultText = "";
+            let resultColor = "black";
+
+            if (total < 78) {
+                resultText = "不及格(去睡路邊)";
+                resultColor = "red";
+            } else if (total >= 123) {
+                resultText = "真的假的? 延長2週";
+                resultColor = "orange";
+            } else if (total >= 117) {
+                resultText = "還不錯哦! 延長1週";
+                resultColor = "limegreen";
+            } else if (total >= 104) {
+                resultText = "請加把勁 延長3天";
+                resultColor = "green";
+            } else if (total >= 91) {
+                resultText = "加油好嗎! 延長2天";
+                resultColor = "brown";
+            } else {
+                resultText = "不想回家嗎? 延長1天";
+                resultColor = "blue";
+            }
+
+            let result = document.getElementById('totalScore');
+            result.textContent = `總分：${total} - ${resultText}`;
+            result.style.fontSize = "50px";
+            result.style.color = resultColor;
+
+            return { total, resultText };
         }
 
         async function saveScore() {
-            let score = calculateTotal();
+            let { total, resultText } = calculateTotal();
             try {
                 await addDoc(collection(db, "scores"), { 
-                    score, 
-                    timestamp: serverTimestamp() 
+                    score: total,
+                    resultText,
+                    timestamp: serverTimestamp()
                 });
                 alert("儲存成功!");
                 loadScores();
@@ -206,25 +183,16 @@
             
             querySnapshot.forEach((doc) => {
                 const data = doc.data();
-                const formattedTime = data.timestamp ? new Date(data.timestamp.seconds * 1000).toLocaleString() : "無時間紀錄";
+                const formattedTime = new Date(data.timestamp.seconds * 1000).toLocaleString();
                 const row = recordList.insertRow();
-                row.innerHTML = `
-                    <td>${formattedTime}</td>
-                    <td>${data.score}</td>
-                    <td><button onclick="deleteRecord('${doc.id}')">刪除</button></td>
-                `;
+                row.innerHTML = `<td>${formattedTime}</td><td>${data.score}</td><td>${data.resultText}</td><td><button onclick="deleteRecord('${doc.id}')">刪除</button></td>`;
             });
         }
 
         window.deleteRecord = async function(docId) {
-            try {
-                await deleteDoc(doc(db, "scores", docId));
-                alert("刪除成功!");
-                loadScores();
-            } catch (error) {
-                console.error("刪除失敗: ", error);
-                alert("刪除失敗!");
-            }
+            await deleteDoc(doc(db, "scores", docId));
+            alert("刪除成功!");
+            loadScores();
         };
 
         document.addEventListener("DOMContentLoaded", () => {
