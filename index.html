@@ -21,16 +21,16 @@
         }
         select {
             font-size: 24px;
-            width: 250px;
+            width: 150px;
         }
         #totalScore {
             font-size: 50px;
             margin-top: 20px;
         }
         button {
-            font-size: 40px;
-            padding: 20px 40px;
-            width: 300px;
+            font-size: 30px;
+            padding: 10px 20px;
+            width: 250px;
             border-radius: 10px;
             background-color: #007BFF;
             color: white;
@@ -56,29 +56,15 @@
             </tr>
         </thead>
         <tbody id="scoreTable">
-            <!-- 心靈關懷 -->
             <tr><td rowspan="5">心靈關懷</td><td>1. 是否有主動關心老公心理狀況</td><td><select class="scoreSelect"></select></td></tr>
             <tr><td>2. 是否有照顧老公心情</td><td><select class="scoreSelect"></select></td></tr>
             <tr><td>3. 尊重老公想法與意願</td><td><select class="scoreSelect"></select></td></tr>
             <tr><td>4. 愛護保護老公，發自內心的喜愛</td><td><select class="scoreSelect"></select></td></tr>
             <tr><td>5. 給予老公正面的稱讚與感謝</td><td><select class="scoreSelect"></select></td></tr>
-
-            <!-- 身體照顧 -->
-            <tr><td rowspan="3">身體照顧</td><td>6. 是否有關心老公身體狀況</td><td><select class="scoreSelect"></select></td></tr>
-            <tr><td>7. 老公身體受傷調養</td><td><select class="scoreSelect"></select></td></tr>
-            <tr><td>8. 老公身體健康的保養作為</td><td><select class="scoreSelect"></select></td></tr>
-
-            <!-- 溝通品質 -->
-            <tr><td rowspan="11">溝通品質</td><td>9. 老公說話時是否有專注聆聽</td><td><select class="scoreSelect"></select></td></tr>
-            <tr><td>10. 是否有記下老公的需求與重點</td><td><select class="scoreSelect"></select></td></tr>
-            <tr><td>11. 主動提出自己想協助的工作內容</td><td><select class="scoreSelect"></select></td></tr>
-            <tr><td>12. 若有困難主動提出討論</td><td><select class="scoreSelect"></select></td></tr>
-            <tr><td>13. 主動安排時間討論與溝通</td><td><select class="scoreSelect"></select></td></tr>
-            <tr><td>14. 不敷衍了事</td><td><select class="scoreSelect"></select></td></tr>
         </tbody>
     </table>
 
-    <button onclick="calculateTotal()">計算總分</button>
+    <button id="calculateButton">計算總分</button>
     <div id="totalScore"></div>
     <button id="saveButton">儲存分數</button>
 
@@ -96,7 +82,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, serverTimestamp, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBs539VzsBModxxNBaML0g7Sxm94vAjiZc",
@@ -111,83 +97,84 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-function calculateTotal() {
-    let total = 0;
-    document.querySelectorAll('.scoreSelect').forEach(select => {
-        let value = parseInt(select.value, 10) || 0;
-        total += value;
-    });
+        function calculateTotal() {
+            let total = 0;
+            document.querySelectorAll('.scoreSelect').forEach(select => {
+                let value = parseInt(select.value, 10) || 0;
+                total += value;
+            });
 
-    let result = document.getElementById('totalScore');
-    result.textContent = `總分：${total}`;
-    result.style.fontSize = "50px";
-    result.style.color = total > 110 ? "orange" : 
-                          total > 100 ? "limegreen" : 
-                          total > 85 ? "green" : 
-                          total > 70 ? "yellow" : 
-                          total > 60 ? "blue" : "red";
+            let result = document.getElementById('totalScore');
+            result.textContent = `總分：${total}`;
+            result.style.fontSize = "50px";
+            result.style.color = total > 110 ? "orange" : 
+                                total > 100 ? "limegreen" : 
+                                total > 85 ? "green" : 
+                                total > 70 ? "yellow" : 
+                                total > 60 ? "blue" : "red";
 
-    return total;
-}
-<td><select class="scoreSelect"></select></td>
+            return total;
+        }
 
-function populateSelects() {
-    let options = ["0", "5", "3", "-5"].map(val => `<option value="${val}">${val}</option>`).join("");
-    document.querySelectorAll('.scoreSelect').forEach(select => { 
-        select.innerHTML = options; 
-    });
-}
+        function populateSelects() {
+            let options = ["5", "3", "0", "-5"].map(val => `<option value="${val}">${val}</option>`).join("");
+            document.querySelectorAll('.scoreSelect').forEach(select => { 
+                select.innerHTML = options;
+                select.value = "0";  // 預設為 0 分
+            });
+        }
 
-async function saveScore() {
-    let score = calculateTotal();
-    try {
-        await addDoc(collection(db, "scores"), { 
-            score, 
-            timestamp: serverTimestamp() 
+        async function saveScore() {
+            let score = calculateTotal();
+            try {
+                await addDoc(collection(db, "scores"), { 
+                    score, 
+                    timestamp: serverTimestamp() 
+                });
+                alert("儲存成功!");
+                loadScores();
+            } catch (e) {
+                alert("儲存失敗!");
+                console.error("錯誤: ", e);
+            }
+        }
+
+        async function loadScores() {
+            const recordList = document.getElementById("scoreHistoryTable").getElementsByTagName("tbody")[0];
+            recordList.innerHTML = "";
+
+            const q = query(collection(db, "scores"), orderBy("timestamp", "desc"));
+            const querySnapshot = await getDocs(q);
+            
+            querySnapshot.forEach((doc) => {
+                const data = doc.data();
+                const formattedTime = data.timestamp ? new Date(data.timestamp.seconds * 1000).toLocaleString() : "無時間紀錄";
+                const row = recordList.insertRow();
+                row.innerHTML = `
+                    <td>${formattedTime}</td>
+                    <td>${data.score}</td>
+                    <td><button onclick="deleteRecord('${doc.id}')">刪除</button></td>
+                `;
+            });
+        }
+
+        window.deleteRecord = async function(docId) {
+            try {
+                await deleteDoc(doc(db, "scores", docId));
+                alert("刪除成功!");
+                loadScores();
+            } catch (error) {
+                console.error("刪除失敗: ", error);
+                alert("刪除失敗!");
+            }
+        };
+
+        document.addEventListener("DOMContentLoaded", () => {
+            populateSelects();
+            loadScores();
+            document.getElementById("calculateButton").addEventListener("click", calculateTotal);
+            document.getElementById("saveButton").addEventListener("click", saveScore);
         });
-        alert("儲存成功!");
-        loadScores();
-    } catch (e) {
-        alert("儲存失敗!");
-        console.error("錯誤: ", e);
-    }
-}
-
-async function loadScores() {
-    const recordList = document.getElementById("scoreHistoryTable").getElementsByTagName("tbody")[0];
-    recordList.innerHTML = "";
-
-    const q = query(collection(db, "scores"), orderBy("timestamp", "desc"));
-    const querySnapshot = await getDocs(q);
-    
-    querySnapshot.forEach((doc) => {
-        const data = doc.data();
-        const formattedTime = data.timestamp ? data.timestamp.toDate().toLocaleString() : "無時間紀錄";
-        const row = recordList.insertRow();
-        row.innerHTML = `
-            <td>${formattedTime}</td>
-            <td>${data.score}</td>
-            <td><button onclick="deleteRecord('${doc.id}')">刪除</button></td>
-        `;
-    });
-}
-
-window.deleteRecord = async function(docId) {
-    try {
-        await deleteDoc(doc(db, "scores", docId));
-        alert("刪除成功!");
-        loadScores();
-    } catch (error) {
-        console.error("刪除失敗: ", error);
-        alert("刪除失敗!");
-    }
-};
-
-document.addEventListener("DOMContentLoaded", () => {
-    populateSelects();
-    loadScores();
-    document.getElementById("saveButton").addEventListener("click", saveScore);
-});
     </script>
 </body>
 </html>
